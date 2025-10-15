@@ -60,7 +60,7 @@ server = app.server
 
 # Layout
 app.layout = html.Div([
-    html.H1("Sankey Diagram Dashboard"),
+    html.H1("Sankey Test"),
     dcc.Graph(figure=fig)
 ])
 
@@ -69,6 +69,7 @@ app.layout = html.Div([
 #with open("requirements.txt", "w") as f:
     #for dist in pkg_resources.working_set:
         #f.write(f"{dist.project_name}=={dist.version}\n")
+
 
 
 
