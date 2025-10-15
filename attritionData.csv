@@ -1,0 +1,8 @@
+source,target,value,label,color,node_label,node_color
+Lead,Contract,200,Lead to Contract,#F0F0F0,Lead,#F0F0F0
+Contract,Ship,80,Contract to Ship,#D9E9CF,Contract,#D9E9CF
+Ship,Basic,75,Ship to Basic,#B6CEB4,Ship,#B6CEB4
+Basic,FUA,65,Basic to FUA,#96A78D,Basic,#96A78D
+Contract,Loss,20,Contract to Loss,orange,FUA,gray
+Ship,Loss,20,Ship to Loss,brown,Loss,pink
+Basic,Loss,5,Basic to Loss,yellow,,
