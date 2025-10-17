@@ -156,32 +156,25 @@ app.layout = html.Div([
 
 @app.callback(
     Output('bar-chart-container', 'style'),
-    Input('toggle-button', 'n_clicks'),
-    State('bar-chart-container', 'style')
-)
-def toggle_bar_chart(n_clicks, current_style):
-    if n_clicks % 2 == 1:
-        return {**current_style, 'display': 'block'}
-    else:
-        return {**current_style, 'display': 'none'}
-    
-@app.callback(
     Output('bar-chart-container', 'children'),
     Input('toggle-chart-button', 'n_clicks')
 )
-def render_bar_charts(n_clicks):
-    if n_clicks % 2 == 0:
-        return []  # hide charts when toggled off
+def toggle_and_render_charts(n_clicks):
+    visible = n_clicks % 2 == 1
+    style = {'position': 'absolute', 'top': '100px', 'left': '50px', 'display': 'block' if visible else 'none'}
 
-    charts = []
-    for (from_node, to_node), chart in reason_charts.items():
-        charts.append(
-            html.Div([
-                html.H5(f"{from_node} → {to_node}"),
-                dcc.Graph(figure=chart)
-            ], style={'marginBottom': '20px'})
-        )
-    return charts
+    if not visible:
+        return style, []
+
+    charts = [
+        html.Div([
+            html.H5(f"{from_node} → {to_node}"),
+            dcc.Graph(figure=chart)
+        ], style={'marginBottom': '20px'})
+        for (from_node, to_node), chart in reason_charts.items()
+    ]
+
+    return style, charts
 
 @app.callback(
     Output('sankey-chart', 'figure'),
