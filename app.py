@@ -132,10 +132,12 @@ def make_reason_chart(from_node, to_node):
 
     return fig
 
-fig.show()
+reason_charts = {
+    (row['from'], row['to']): make_reason_chart(row['from'], row['to'])
+    for _, row in loss_links.iterrows()
+}
 
-fig2 = make_reason_chart('Lead', 'Lead Loss')
-#fig2.show()
+fig.show()
 
 #configure for Dash
 app = dash.Dash(__name__)
@@ -165,9 +167,12 @@ def toggle_bar_chart(n_clicks, current_style):
     
 @app.callback(
     Output('bar-chart-container', 'children'),
-    Input('sankey-chart', 'figure')  # or another trigger
+    Input('toggle-chart-button', 'n_clicks')
 )
-def render_bar_charts(sankey_fig):
+def render_bar_charts(n_clicks):
+    if n_clicks % 2 == 0:
+        return []  # hide charts when toggled off
+
     charts = []
     for (from_node, to_node), chart in reason_charts.items():
         charts.append(
@@ -176,7 +181,7 @@ def render_bar_charts(sankey_fig):
                 dcc.Graph(figure=chart)
             ], style={'marginBottom': '20px'})
         )
-    return charts    
+    return charts
 
 @app.callback(
     Output('sankey-chart', 'figure'),
@@ -211,9 +216,3 @@ def update_sankey_labels(n_clicks):
     )])
 
     return fig, label_text
-
-
-
-
-
-
