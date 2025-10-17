@@ -23,8 +23,11 @@ fastexcel==0.16.0
 colorama==0.4.6
 comm==0.2.2
 gunicorn
+seaborn
+plotly.express
 matplotlib-inline==0.1.7
 setuptools==65.5.0
 pip==24.0
+
 
 
