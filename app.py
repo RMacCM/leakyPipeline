@@ -8,10 +8,10 @@ from dash import dcc, html, Input, Output, State
 import plotly.express as px
 import plotly.graph_objects as go
 
-# Load and prepare data
+# Load and prepare data: each row is 1 indiv moving 'from' stage A 'to' stage B,
+#     with 'reason' for leaving pipeline (null, or attritted reason code)
 df = pd.read_csv("pipelineList.csv").iloc[:, :4]
-df['value'] = 1  # Each row represents one unit of flow
-
+df['value'] = 1  # add integer column for aggregation
 
 # Aggregate flows
 aggregates = df.groupby(['from', 'to'], as_index=False).agg({'value': 'sum'})
@@ -19,13 +19,13 @@ aggregates = df.groupby(['from', 'to'], as_index=False).agg({'value': 'sum'})
 # Identify loss links
 loss_links = aggregates[aggregates['to'].str.endswith(' Loss')].copy()
 
-# Compute source-level loss %
+# Compute source-level loss % metric
 total_by_source = aggregates.groupby('from')['value'].sum().rename('total')
 loss_by_source = loss_links.groupby('from')['value'].sum().rename('loss')
 loss_metrics = pd.concat([total_by_source, loss_by_source], axis=1).fillna(0)   
 loss_metrics['loss_pct'] = (loss_metrics['loss'] / loss_metrics['total']) * 100
 
-# Compute system-level loss %
+# Compute system-level loss % metric
 total_loss = loss_links['value'].sum()
 loss_links['loss_pct_of_total'] = (loss_links['value'] / total_loss) * 100      
 
@@ -80,7 +80,7 @@ fig = go.Figure(data=[go.Sankey(
     link=dict(
         source=aggregates['from_idx'],
         target=aggregates['to_idx'],
-        label=aggregates['link_label'].tolist(),        # not working - no metrics
+        label=aggregates['link_label'].tolist(),     # NO LABELS DISPLAYING
         value=aggregates['value']
     )
 )])
@@ -209,3 +209,4 @@ def update_sankey_labels(n_clicks):
     )])
 
     return fig, label_text
+
